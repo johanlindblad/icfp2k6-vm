@@ -1,0 +1,6 @@
+[package]
+name = "icfp2k6"
+version = "0.1.0"
+authors = ["Johan Lindblad <johanlindblad@gmail.com>"]
+
+[dependencies]
