@@ -2,8 +2,14 @@
 name = "icfp2k6"
 version = "0.1.0"
 dependencies = [
+ "bitfield 0.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "byteorder 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "bitfield"
+version = "0.0.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "byteorder"
