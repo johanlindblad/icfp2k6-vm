@@ -1,20 +1,16 @@
 #![feature(plugin)]
-#![allow(dead_code)]
 #![plugin(bitfield)]
+#![allow(dead_code)]
 
+#[macro_use]
 extern crate byteorder;
 
 use std::io::prelude::*;
 use std::fs::File;
 
-bitfield!{Instruction,
-    operator: 4,
-    orthography_a: 3,
-    other: 13,
-    register_a: 4,
-    register_b: 4,
-    register_c: 4
-}
+mod operator;
+mod instruction;
+use self::instruction::Instruction;
 
 fn read_program(path: &str) -> Vec<Instruction> {
     let mut file = File::open(path).unwrap();
@@ -34,5 +30,5 @@ fn main() {
     let program = read_program("../cmu.um");
 
     println!("Program length: {} 32-bit values", program.len());
-    println!("First byte: {}", program[0].get_operator());
+    println!("First byte: {}", program[0]);
 }

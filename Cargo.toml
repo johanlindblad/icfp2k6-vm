@@ -5,4 +5,6 @@ authors = ["Johan Lindblad <johanlindblad@gmail.com>"]
 
 [dependencies]
 byteorder = "0.5.3"
-bitfield = "0.0.7"
+
+[dependencies.bitfield]
+git = "https://github.com/dzamlo/rust-bitfield"
