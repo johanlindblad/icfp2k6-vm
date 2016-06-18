@@ -5,8 +5,8 @@ use std::fmt;
 bitfield!{pub Instruction,
     operator: 4,
     orthography_register: 3,
-    other: 13,
-    registers: [4; 3],
+    other: 16,
+    registers: [3; 3],
 }
 
 impl Instruction {
@@ -15,13 +15,16 @@ impl Instruction {
             0 => Operator::ConditionalMove(self.get_registers()),
             1 => Operator::ArrayIndex(self.get_registers()),
             2 => Operator::Addition(self.get_registers()),
-            13 => Operator::Orthography(self.get_orthography_register(), 0 as u32),
+            13 => Operator::Orthography(self.get_orthography_register(), self.get_orthography_value()),
             op => panic!("Operator {} not implemented", op)
         }
     }
 
-    fn orthography_value(&self) {
-        //self.get_other() as u32 &
+    fn get_orthography_value(&self) -> u32 {
+        (self.get_other() as u32) << 9 &
+        (self.get_registers()[0] as u32) << 6 &
+        (self.get_registers()[1] as u32) << 3 &
+        self.get_registers()[2] as u32
     }
 }
 

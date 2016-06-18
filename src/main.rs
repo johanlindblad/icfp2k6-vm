@@ -10,6 +10,7 @@ use std::fs::File;
 
 mod operator;
 mod instruction;
+mod cpu;
 use self::instruction::Instruction;
 
 fn read_program(path: &str) -> Vec<Instruction> {
