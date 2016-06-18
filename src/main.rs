@@ -1,3 +1,4 @@
+#![feature(slice_patterns)]
 #![feature(plugin)]
 #![plugin(bitfield)]
 #![allow(dead_code)]
@@ -12,6 +13,7 @@ mod operator;
 mod instruction;
 mod cpu;
 use self::instruction::Instruction;
+use self::cpu::Cpu;
 
 fn read_program(path: &str) -> Vec<Instruction> {
     let mut file = File::open(path).unwrap();
@@ -29,7 +31,14 @@ fn read_program(path: &str) -> Vec<Instruction> {
 
 fn main() {
     let program = read_program("../cmu.um");
+    let mut cpu = Cpu::new();
 
     println!("Program length: {} 32-bit values", program.len());
-    println!("First byte: {}", program[0]);
+
+    for i in 0.. {
+        println!("{}", program[i].operator());
+        cpu.apply(program[i].operator());
+        println!("CPU state: {}", cpu)
+    }
+
 }

@@ -10,11 +10,14 @@ bitfield!{pub Instruction,
 }
 
 impl Instruction {
-    fn operator(&self) -> Operator {
+    pub fn operator(&self) -> Operator {
         match self.get_operator() {
             0 => Operator::ConditionalMove(self.get_registers()),
             1 => Operator::ArrayIndex(self.get_registers()),
-            2 => Operator::Addition(self.get_registers()),
+            2 => Operator::ArrayAmendment(self.get_registers()),
+            3 => Operator::Addition(self.get_registers()),
+            5 => Operator::Division(self.get_registers()),
+            6 => Operator::NotAnd(self.get_registers()),
             13 => Operator::Orthography(self.get_orthography_register(), self.get_orthography_value()),
             op => panic!("Operator {} not implemented", op)
         }
