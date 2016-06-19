@@ -16,17 +16,21 @@ impl Instruction {
             1 => Operator::ArrayIndex(self.get_registers()),
             2 => Operator::ArrayAmendment(self.get_registers()),
             3 => Operator::Addition(self.get_registers()),
+            4 => Operator::Multiplication(self.get_registers()),
             5 => Operator::Division(self.get_registers()),
             6 => Operator::NotAnd(self.get_registers()),
+            7 => Operator::Halt,
+            10 => Operator::Output(self.get_registers()[2]),
+            12 => Operator::LoadProgram(self.get_registers()[1], self.get_registers()[2]),
             13 => Operator::Orthography(self.get_orthography_register(), self.get_orthography_value()),
             op => panic!("Operator {} not implemented", op)
         }
     }
 
     fn get_orthography_value(&self) -> u32 {
-        (self.get_other() as u32) << 9 &
-        (self.get_registers()[0] as u32) << 6 &
-        (self.get_registers()[1] as u32) << 3 &
+        (self.get_other() as u32) << 9 |
+        (self.get_registers()[0] as u32) << 6 |
+        (self.get_registers()[1] as u32) << 3 |
         self.get_registers()[2] as u32
     }
 }

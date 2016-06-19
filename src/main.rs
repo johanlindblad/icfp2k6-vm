@@ -3,26 +3,27 @@
 #![plugin(bitfield)]
 #![allow(dead_code)]
 
-#[macro_use]
-extern crate byteorder;
-
 use std::io::prelude::*;
 use std::fs::File;
+use std::mem;
 
 mod operator;
 mod instruction;
 mod cpu;
-use self::instruction::Instruction;
 use self::cpu::Cpu;
 
-fn read_program(path: &str) -> Vec<Instruction> {
+fn read_program(path: &str) -> Vec<u32> {
     let mut file = File::open(path).unwrap();
 
-    let mut program: Vec<Instruction> = Vec::new();
+    let mut program: Vec<u32> = Vec::new();
+
     let mut temp: [u8; 4] = [0; 4];
 
     while let Ok(4) = file.read(&mut temp) {
-        let instruction = Instruction::new(temp);
+        let instruction = unsafe {
+            mem::transmute::<[u8; 4], u32>(temp)
+        };
+
         program.push(instruction);
     }
 
@@ -30,15 +31,17 @@ fn read_program(path: &str) -> Vec<Instruction> {
 }
 
 fn main() {
-    let program = read_program("../cmu.um");
-    let mut cpu = Cpu::new();
+    let program = read_program("../sandmark.umz");
+    let mut cpu = Cpu::new(program.into_boxed_slice());
 
-    println!("Program length: {} 32-bit values", program.len());
+
+    cpu.run();
+    /*println!("Program length: {} 32-bit values", program.len());
 
     for i in 0.. {
         println!("{}", program[i].operator());
         cpu.apply(program[i].operator());
         println!("CPU state: {}", cpu)
     }
-
+*/
 }

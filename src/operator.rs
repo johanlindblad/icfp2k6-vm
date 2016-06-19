@@ -9,7 +9,11 @@ pub enum Operator {
     Multiplication([u8; 3]),
     Division([u8; 3]),
     NotAnd([u8; 3]),
+    Halt,
+    Allocation([u8; 3]),
     //
+    Output(u8),
+    LoadProgram(u8, u8),
     Orthography(u8, u32)
 }
 
