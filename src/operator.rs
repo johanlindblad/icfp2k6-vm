@@ -10,8 +10,9 @@ pub enum Operator {
     Division([u8; 3]),
     NotAnd([u8; 3]),
     Halt,
-    Allocation([u8; 3]),
-    //
+    Allocation(u8, u8),
+    Abandonment(u8),
+    Input(u8),
     Output(u8),
     LoadProgram(u8, u8),
     Orthography(u8, u32)

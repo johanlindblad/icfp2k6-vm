@@ -20,7 +20,10 @@ impl Instruction {
             5 => Operator::Division(self.get_registers()),
             6 => Operator::NotAnd(self.get_registers()),
             7 => Operator::Halt,
+            8 => Operator::Allocation(self.get_registers()[1], self.get_registers()[2]),
+            9 => Operator::Abandonment(self.get_registers()[2]),
             10 => Operator::Output(self.get_registers()[2]),
+            11 => Operator::Input(self.get_registers()[2]),
             12 => Operator::LoadProgram(self.get_registers()[1], self.get_registers()[2]),
             13 => Operator::Orthography(self.get_orthography_register(), self.get_orthography_value()),
             op => panic!("Operator {} not implemented", op)

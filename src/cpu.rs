@@ -1,4 +1,3 @@
-use std::mem;
 use operator::Operator;
 use std::fmt;
 use instruction::Instruction;
@@ -29,13 +28,21 @@ impl Cpu {
         self.halted = false;
 
         while self.halted == false {
-            let raw_instruction = unsafe {
-                mem::transmute::<u32, [u8; 4]>(self.platters[0][self.program_counter])
-            };
-            let instruction = Instruction::new(raw_instruction);
+
+            let raw_instruction = self.platters[0][self.program_counter];
+            let instruction_array = [
+                (raw_instruction >> 24) as u8,
+                ((raw_instruction >> 16) & 255) as u8,
+                ((raw_instruction >> 8) & 255) as u8,
+                ((raw_instruction) & 255) as u8
+            ];
+
+            let instruction = Instruction::new(instruction_array);
             let operator = instruction.operator();
 
             //println!("{}", operator);
+            //println!("{:b}", raw_instruction);
+            //println!("{:?}", instruction_array);
             self.program_counter += 1;
             //println!("Finger: {}", self.program_counter);
             self.apply(operator);
@@ -58,7 +65,6 @@ impl Cpu {
             Operator::ArrayIndex([a, b, c]) => {
                 let platter_index = self.registers[b as usize] as usize;
                 let offset = self.registers[c as usize] as usize;
-                println!("Array index into {} from platter {} index {}, value {}", a, platter_index, offset, self.platters[platter_index][offset]);
                 self.registers[a as usize] = self.platters[platter_index][offset];
             },
 
@@ -73,7 +79,7 @@ impl Cpu {
 
             // 3
             Operator::Addition([a, b, c]) => {
-                let value = self.registers[b as usize] + self.registers[c as usize];
+                let value = self.registers[b as usize].wrapping_add(self.registers[c as usize]);
                 self.registers[a as usize] = value;
             },
 
@@ -101,11 +107,33 @@ impl Cpu {
                 self.halted = true
             },
 
+            // 8
+            Operator::Allocation(index_register, capacity_register) => {
+                let capacity = self.registers[capacity_register as usize];
+                self.platters.push(vec![0; capacity as usize].into_boxed_slice());
+                self.registers[index_register as usize] = (self.platters.len() as u32) - 1;
+            },
+
+            // 9
+            Operator::Abandonment(index_register) => {
+                let index = self.registers[index_register as usize];
+
+                if index == 0 {
+                    panic!("Trying to abandon platter 0");
+                }
+
+                self.platters[index as usize] = Box::new([]);
+            },
+
             // 10
             Operator::Output(char_register) => {
                 let text = (self.registers[char_register as usize] as u8) as char;
                 print!("{}", text);
-            }
+            },
+
+            Operator::Input(char_register) => {
+                panic!("{}", "Input not implemented");
+            },
 
             // 12
             Operator::LoadProgram(b, c) => {
@@ -123,7 +151,6 @@ impl Cpu {
             Operator::Orthography(register_number, value) => {
                 self.registers[register_number as usize] = value
             }
-            _ => panic!("Operator not implemented: {}", operator)
         }
     }
 }

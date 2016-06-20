@@ -5,7 +5,6 @@
 
 use std::io::prelude::*;
 use std::fs::File;
-use std::mem;
 
 mod operator;
 mod instruction;
@@ -20,9 +19,7 @@ fn read_program(path: &str) -> Vec<u32> {
     let mut temp: [u8; 4] = [0; 4];
 
     while let Ok(4) = file.read(&mut temp) {
-        let instruction = unsafe {
-            mem::transmute::<[u8; 4], u32>(temp)
-        };
+        let instruction = ((temp[0] as u32) << 24) + ((temp[1] as u32) << 16) + ((temp[2] as u32) << 8) + (temp[3] as u32);
 
         program.push(instruction);
     }
