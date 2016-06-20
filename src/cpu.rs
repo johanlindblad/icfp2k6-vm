@@ -1,13 +1,15 @@
 use operator::Operator;
 use std::fmt;
 use instruction::Instruction;
+use std::io;
 
 #[derive(Debug)]
 pub struct Cpu {
     registers: [u32; 8],
     platters: Vec<Box<[u32]>>,
     program_counter: usize,
-    halted: bool
+    halted: bool,
+    input_buffer: String
 }
 
 impl Cpu {
@@ -20,7 +22,8 @@ impl Cpu {
             registers: [0; 8],
             platters: platters,
             program_counter: 0,
-            halted: true
+            halted: true,
+            input_buffer: String::new()
         }
     }
 
@@ -132,7 +135,15 @@ impl Cpu {
             },
 
             Operator::Input(char_register) => {
-                panic!("{}", "Input not implemented");
+                if self.input_buffer.len() == 0 {
+                    io::stdin().read_line(&mut self.input_buffer).unwrap();
+                }
+
+                let first: char = self.input_buffer.chars().next().unwrap();
+                let rest: String = String::from_utf8(self.input_buffer.bytes().skip(1).collect()).unwrap();
+
+                self.registers[char_register as usize] = first as u32;
+                self.input_buffer = rest;
             },
 
             // 12

@@ -28,9 +28,8 @@ fn read_program(path: &str) -> Vec<u32> {
 }
 
 fn main() {
-    let program = read_program("../sandmark.umz");
+    let program = read_program("../codex.umz");
     let mut cpu = Cpu::new(program.into_boxed_slice());
-
 
     cpu.run();
     /*println!("Program length: {} 32-bit values", program.len());
